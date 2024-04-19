@@ -5,14 +5,19 @@ cask "youtube-music" do
   desc "YouTube Music Desktop App"
   homepage "https://github.com/th-ch/youtube-music"
 
-  # Fetch the latest release version from GitHub API
-  uri = URI("https://api.github.com/repos/th-ch/youtube-music/releases/latest")
-  response = Net::HTTP.get(uri)
-  latest_release = JSON.parse(response)['tag_name']
+  # Fetch the latest release version from GitHub
+  release_url = "https://github.com/th-ch/youtube-music/releases"
+  latest_url = "#{release_url}/latest"
+  response = Net::HTTP.get_response(URI.parse(latest_url))
+  latest_url = response['location']
+  odie "Cannot find the latest version" if (latest_url.nil?)
+  latest_release = latest_url.delete_prefix("#{release_url}/tag/")
+
   version latest_release
 
-  base_url = "https://github.com/th-ch/youtube-music/releases/download/#{latest_release}/YouTube-Music-#{latest_release.delete_prefix('v')}"
+  base_url = "#{release_url}/download/#{latest_release}/YouTube-Music-#{latest_release.delete_prefix('v')}"
   file_extension = Hardware::CPU.arm? ? "-arm64.dmg" : ".dmg"
+
   url "#{base_url}#{file_extension}"
 
   # TODO checksum
