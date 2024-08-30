@@ -25,6 +25,8 @@ cask "youtube-music" do
 
   app "YouTube Music.app"
 
+  uninstall rmdir: "#{HOMEBREW_PREFIX}/Caskroom/youtube-music"
+
   postflight do
     print("Removing quarantine attribute from YouTube Music.app.\n")
     system "xattr -cr '/Applications/YouTube Music.app'"
