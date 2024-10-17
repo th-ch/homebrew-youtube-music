@@ -20,6 +20,11 @@ cask "youtube-music" do
 
   url "#{base_url}#{file_extension}"
 
+  livecheck do
+    url :url
+    strategy :github_latest
+  end
+
   # TODO checksum
   sha256 :no_check
 
