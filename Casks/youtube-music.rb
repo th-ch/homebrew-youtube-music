@@ -13,19 +13,22 @@ cask "youtube-music" do
   odie "Cannot find the latest version" if (latest_url.nil?)
   latest_release = latest_url.delete_prefix("#{release_url}/tag/")
 
-  version latest_release
+  version :latest
 
   base_url = "#{release_url}/download/#{latest_release}/YouTube-Music-#{latest_release.delete_prefix('v')}"
   file_extension = Hardware::CPU.arm? ? "-arm64.dmg" : ".dmg"
 
   url "#{base_url}#{file_extension}"
 
+  livecheck do
+    url :url
+    strategy :github_latest
+  end
+
   # TODO checksum
   sha256 :no_check
 
   app "YouTube Music.app"
-
-  uninstall rmdir: "#{HOMEBREW_PREFIX}/Caskroom/youtube-music"
 
   postflight do
     print("Removing quarantine attribute from YouTube Music.app.\n")
